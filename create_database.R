@@ -1,6 +1,5 @@
 library(tidyverse)
 library(lubridate)
-library(pbapply)
 
 # Read a source file ------------------------------------------------------
 read_source_file <- function(filename) {
@@ -33,7 +32,7 @@ source_files <- list.files("data",
   full.names = TRUE
 )
 # Read all the source files
-source_data <- pblapply(source_files, read_source_file) %>%
+source_data <- lapply(source_files, read_source_file) %>%
   bind_rows()
 
 # Read station file ---------------------------------------------------
@@ -49,7 +48,7 @@ stn_files <- list.files("data",
   full.names = TRUE
 )
 # Read all the station files
-stn_data <- pblapply(stn_files, read_station_file) %>%
+stn_data <- lapply(stn_files, read_station_file) %>%
   bind_rows() %>%
   distinct()
 
