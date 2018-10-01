@@ -1,9 +1,9 @@
 # ECA&D Stations Browser
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
-This application gives the possibility to explore the impressive amount of weather stations data available through the [ECAD (European Climate Assessment & Dataset) project](https://www.ecad.eu/).
+This application gives the possibility to explore the impressive amount of weather stations data available through the [ECA&D (European Climate Assessment & Dataset) project](https://www.ecad.eu/).
 
-The application, based on [Shiny](https://shiny.rstudio.com/), is accessible at the following URL: [https://mdefelice.shinyapps.io/ECAD-data-browser/](https://mdefelice.shinyapps.io/ECAD-data-browser/).
+The application, based on [Shiny](https://shiny.rstudio.com/), can be run locally using [R](https://www.r-project.org/) or accessed at the following URL: [https://mdefelice.shinyapps.io/ECAD-data-browser/](https://mdefelice.shinyapps.io/ECAD-data-browser/).
 
 This repository includes also a R script (`create_database.R`) that creates a data frame with all the stations metadata starting from the Source and Stations files available on the [project's website](https://www.ecad.eu//dailydata/predefinedseries.php). To create the data frame, follow these steps:
 
