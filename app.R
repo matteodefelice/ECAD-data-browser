@@ -4,7 +4,7 @@ library(tidyverse)
 
 ### USER INTERFACE ------------------------------------------------------
 ui <- fluidPage(
-  titlePanel("European Climate Assessment & Dataset (ECAD) stations browser"),
+  titlePanel("European Climate Assessment & Dataset (ECA&D) stations metadata browser"),
   tags$head(
     # Include custom CSS
     includeCSS("styles.css")
@@ -13,7 +13,7 @@ ui <- fluidPage(
   fluidRow(
     column(
       3,
-      p("Browse the available stations in the Blended ECA Dataset"),
+      p("Browse the available stations in the Blended ECA Dataset. Click on each marker to see how to access the data."),
       wellPanel(
         h4("Filter"),
         # Select the minimum number of years
@@ -58,7 +58,12 @@ ui <- fluidPage(
         ), a("Data description & policy", href = "https://www.ecad.eu//dailydata/index.php")),
         tags$p("Developed by ", 
                a("Matteo De Felice", href = "http://matteodefelice.name"),
-               "(the author is not involved in the ECA&D project)"
+               "(the author is not involved in the ECA&D project).",
+               "The code is ", 
+               a("available on Github", href = "https://github.com/matteodefelice/ECAD-data-browser"),
+               "with",
+               a("CC BY 4.0", href = "https://creativecommons.org/licenses/by/4.0/"),
+               "license"
                )
       )
     )
