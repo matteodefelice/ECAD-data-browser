@@ -16,7 +16,8 @@ units = list(
   SS = list(name = 'Sunshine', unit = 'Hours', scale = 10),
   TG = list(name = 'Mean Temperature', unit = 'Celsius Degrees (C)', scale = 10),
   TN = list(name = 'Min Temperature', unit = 'Celsius Degrees (C)', scale = 10),
-  TX = list(name = 'Max Temperature', unit = 'Celsius Degrees (C)', scale = 10)
+  TX = list(name = 'Max Temperature', unit = 'Celsius Degrees (C)', scale = 10),
+  QQ = list(name = 'Solar radiation', unit = 'W/m2', scale = 1)
 )
   
 
@@ -75,7 +76,8 @@ ui <- fluidPage(
                              "Sunshine (SS)" = "SS",
                              "Mean Temperature (TG)" = "TG",
                              "Min Temperature (TN)" = "TN",
-                             "Max Temperature (TX)" = "TX"
+                             "Max Temperature (TX)" = "TX",
+                             "Solar Radiation (QQ)" = "QQ"
                            ),
                            selected = "TG"
         ),
