@@ -77,12 +77,12 @@ server <- function(input, output, session) {
   # Return the list of selected stations
   selected_stations <- reactive({
     r <- subset(eobs_processed, years_length >= input$years) %>%
-      filter(base_ELEI %in% input$elems)
+      dplyr::filter(base_ELEI %in% input$elems)
     if (input$any_all == "all") {
       r <- r %>%
         group_by(STAID) %>%
         mutate(n = n()) %>%
-        filter(n == length(input$elems)) %>%
+        dplyr::filter(n == length(input$elems)) %>%
         ungroup()
     }
     return(r)
