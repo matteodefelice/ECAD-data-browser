@@ -24,7 +24,7 @@ units <- list(
   QQ = list(name = "Solar radiation", unit = "W/m2", scale = 1)
 )
 
-
+# Function used to read local data 
 read_station_data <- function(filename) {
   nskips <- 20
   if (str_sub(filename, 1, 2) == "RR") {
@@ -110,9 +110,8 @@ ui <- fluidPage(
     column(
       9,
       leafletOutput("stations_map", height = "300px"),
-      tags$p(
-        "Click on a marker to show daily time-series data.",
-        "The horizontal lines are the 5th and 95th percentiles for the entire time-series",
+      tags$p("Click on a marker to show daily time-series data."),
+      tags$p("The horizontal lines are the 5th and 95th percentiles for the entire time-series. ",
         "Change the number in the bottom left to apply a rolling average (default one day, i.e. no average)"
         ),
       dygraphOutput("dyts", height = "400px")
@@ -171,6 +170,7 @@ server <- function(input, output, session) {
 
   output$dyts <- renderDygraph({
     if (!is.null(input$stations_map_marker_click)) {
+      # Code used to read static files in 'data/'
       # toplot <- read_station_data(paste0(
       #   "data/",
       #   input$stations_map_marker_click$id
@@ -189,13 +189,6 @@ server <- function(input, output, session) {
         select(
           date, value
         )
-
-      ## TOPLOT
-      # # A tibble: 24,480 x 2
-      # date       value
-      # <date>     <dbl>
-      #   1 1951-01-01    76
-      # 2 1951-01-02   108
 
       # Load unit measure
       this_unit <- units[[str_sub(input$stations_map_marker_click$id, 1, 2)]]
