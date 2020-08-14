@@ -1,8 +1,12 @@
 library(shiny)
 library(leaflet)
-library(tidyverse)
+library(dplyr)
+library(readr)
+library(stringr)
 library(xts)
 library(dygraphs)
+library(glue)
+library(lubridate)
 
 units <- list(
   CC = list(name = "Cloud cover", unit = "Oktas", scale = 1),
@@ -52,17 +56,21 @@ ui <- fluidPage(
   fluidRow(
     column(
       3,
-      p("Browse the available stations in the Blended ECA Dataset. Click on each marker to see the data and the metadata."),
-      tags$p(paste0(
+      p("Browse the available stations in the Blended ECA Dataset. Click on each marker to see the time-series and the metadata."),
+      tags$p(
         "Data from the European Climate Assessment & Dataset project. ",
-        "Updated November 2019. "
-      ), a("Data description & policy", href = "https://www.ecad.eu//dailydata/index.php")),
+        "Processed data retrieved from ",
+        a("KNMI Climate Explorer", href = "https://climexp.knmi.nl/start.cgi"),
+        "Time-series available until April 2019.",
+        a("Data description & policy", href = "https://www.ecad.eu//dailydata/index.php")
+      ),
       tags$p(
         "Developed by ",
         a("Matteo De Felice", href = "http://matteodefelice.name"),
         "(the author is not involved in the ECA&D project).",
         "The code is ",
         a("available on Github", href = "https://github.com/matteodefelice/ECAD-data-browser"),
+        "Thanks to Geert Jan van Oldenburgh and the KNMI (Koninklijk Nederlands Meteorologisch Instituut) for the data access"
       ),
       wellPanel(
         h4("Filter"),
@@ -80,19 +88,19 @@ ui <- fluidPage(
         checkboxGroupInput("elems",
           label = "the following elements:",
           choices = c(
-            "Cloud cover (CC)" = "CC",
-            "Wind Direction (DD)" = "DD",
-            "Wind Speed (FG)" = "FG",
-            "Wind Gust (FX)" = "FX",
-            "Humidity (HU)" = "HU",
-            "Pressure (PP)" = "PP",
-            "Precipitation (RR)" = "RR",
-            "Snow Depth (SD)" = "SD",
-            "Sunshine (SS)" = "SS",
-            "Mean Temperature (TG)" = "TG",
-            "Min Temperature (TN)" = "TN",
-            "Max Temperature (TX)" = "TX",
-            "Solar Radiation (QQ)" = "QQ"
+            "Cloud cover (CC)" = "CC", # climexp
+            # "Wind Direction (DD)" = "DD",
+            # "Wind Speed (FG)" = "FG",
+            # "Wind Gust (FX)" = "FX",
+            # "Humidity (HU)" = "HU",
+            "Pressure (PP)" = "PP", # climexp
+            "Precipitation (RR)" = "RR", # climexp
+            "Snow Depth (SD)" = "SD", # climexp
+            # "Sunshine (SS)" = "SS",
+            "Mean Temperature (TG)" = "TG", # climexp
+            "Min Temperature (TN)" = "TN", # climexp
+            "Max Temperature (TX)" = "TX" # climexp
+            # "Solar Radiation (QQ)" = "QQ"
           ),
           selected = "TG"
         ),
@@ -101,7 +109,12 @@ ui <- fluidPage(
     ),
     column(
       9,
-      leafletOutput("stations_map", height = "500px"),
+      leafletOutput("stations_map", height = "300px"),
+      tags$p(
+        "Click on a marker to show daily time-series data.",
+        "The horizontal lines are the 5th and 95th percentiles for the entire time-series",
+        "Change the number in the bottom left to apply a rolling average (default one day, i.e. no average)"
+        ),
       dygraphOutput("dyts", height = "400px")
     )
   )
@@ -110,7 +123,8 @@ ui <- fluidPage(
 ### Server side ------------------------------------------------------
 server <- function(input, output, session) {
   # Load the stations metadata saved as a serialised object
-  eobs_processed <- read_rds("eobs-database-stations.rds")
+  eobs_processed <- read_rds("eobs-database-stations.rds") %>%
+    ungroup()
   # Return the list of selected stations
   selected_stations <- reactive({
     r <- subset(eobs_processed, years_length >= input$years) %>%
@@ -157,16 +171,38 @@ server <- function(input, output, session) {
 
   output$dyts <- renderDygraph({
     if (!is.null(input$stations_map_marker_click)) {
-      toplot <- read_station_data(paste0(
-        "data/",
-        input$stations_map_marker_click$id
-      )) %>%
-        select(date = DATE, value)
+      # toplot <- read_station_data(paste0(
+      #   "data/",
+      #   input$stations_map_marker_click$id
+      # )) %>%
+      #   select(date = DATE, value)
+
+      VAR <- str_sub(input$stations_map_marker_click$id, 1, 2) %>%
+        str_to_lower()
+      ID <- str_sub(input$stations_map_marker_click$id, 9, 14)
+      URL <- glue("https://climexp.knmi.nl/ECAData/data/b{VAR}{ID}.dat.gz")
+
+      toplot <- read_table(URL, skip = 1, col_names = c("year", "month", "day", "value")) %>%
+        mutate(
+          date = make_date(year, month, day)
+        ) %>%
+        select(
+          date, value
+        )
+
+      ## TOPLOT
+      # # A tibble: 24,480 x 2
+      # date       value
+      # <date>     <dbl>
+      #   1 1951-01-01    76
+      # 2 1951-01-02   108
 
       # Load unit measure
       this_unit <- units[[str_sub(input$stations_map_marker_click$id, 1, 2)]]
-      # Scale value
-      toplot$value <- toplot$value / this_unit$scale
+
+      # Scale value (ONLY FOR FILES)
+      # toplot$value <- toplot$value / this_unit$scale
+
       # Get name
       sel_stn <- eobs_processed %>%
         dplyr::filter(filename == input$stations_map_marker_click$id) %>%
