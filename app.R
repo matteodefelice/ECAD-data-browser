@@ -61,7 +61,7 @@ ui <- fluidPage(
         "Data from the European Climate Assessment & Dataset project. ",
         "Processed data retrieved from ",
         a("KNMI Climate Explorer", href = "https://climexp.knmi.nl/start.cgi"),
-        "Time-series available until April 2019.",
+        "Time-series available until July 2020.",
         a("Data description & policy", href = "https://www.ecad.eu//dailydata/index.php")
       ),
       tags$p(
@@ -90,8 +90,8 @@ ui <- fluidPage(
           choices = c(
             "Cloud cover (CC)" = "CC", # climexp
             # "Wind Direction (DD)" = "DD",
-            # "Wind Speed (FG)" = "FG",
-            # "Wind Gust (FX)" = "FX",
+            "Wind Speed (FG)" = "FG",
+            "Wind Gust (FX)" = "FX",
             # "Humidity (HU)" = "HU",
             "Pressure (PP)" = "PP", # climexp
             "Precipitation (RR)" = "RR", # climexp
@@ -99,8 +99,8 @@ ui <- fluidPage(
             # "Sunshine (SS)" = "SS",
             "Mean Temperature (TG)" = "TG", # climexp
             "Min Temperature (TN)" = "TN", # climexp
-            "Max Temperature (TX)" = "TX" # climexp
-            # "Solar Radiation (QQ)" = "QQ"
+            "Max Temperature (TX)" = "TX", # climexp
+            "Solar Radiation (QQ)" = "QQ"
           ),
           selected = "TG"
         ),
