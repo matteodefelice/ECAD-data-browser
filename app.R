@@ -61,7 +61,7 @@ ui <- fluidPage(
         "Data from the European Climate Assessment & Dataset project. ",
         "Processed data retrieved from ",
         a("KNMI Climate Explorer", href = "https://climexp.knmi.nl/start.cgi"),
-        "Time-series available until July 2020.",
+        # "Time-series available until July 2020.",
         a("Data description & policy", href = "https://www.ecad.eu//dailydata/index.php")
       ),
       tags$p(

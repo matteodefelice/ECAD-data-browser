@@ -70,10 +70,14 @@ eobs_data <- source_data %>%
       STAID
     ),
     lat_dec = as.numeric(str_split(LAT, ":", simplify = TRUE)[1]) +
+      sign(as.numeric(str_split(LAT, ":", simplify = TRUE)[1]))*
       as.numeric(str_split(LAT, ":", simplify = TRUE)[2]) / 60 +
+      sign(as.numeric(str_split(LAT, ":", simplify = TRUE)[1]))*
       as.numeric(str_split(LAT, ":", simplify = TRUE)[3]) / 3600,
     lon_dec = as.numeric(str_split(LON, ":", simplify = TRUE)[1]) +
+      sign(as.numeric(str_split(LON, ":", simplify = TRUE)[1]))*
       as.numeric(str_split(LON, ":", simplify = TRUE)[2]) / 60 +
+      sign(as.numeric(str_split(LON, ":", simplify = TRUE)[1]))*
       as.numeric(str_split(LON, ":", simplify = TRUE)[3]) / 3600,
     years_length = round(as.numeric(difftime(STOP, START, units = "days")) / 365.25)
   )
